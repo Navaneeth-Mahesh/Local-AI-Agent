@@ -1,209 +1,240 @@
-Project Vision
+# AI Agent
 
-A production-grade Local AI Agent Platform where every user runs it on their own computer.
+> A production-grade, self-hosted AI Agent built with FastAPI, React, PostgreSQL, and Gemini.
 
-Each user:
+Build your own intelligent AI assistant that runs entirely on your computer while giving you full control over your data, memory, tools, and permissions.
 
-Creates an account
-Logs in
-Connects their own Gemini API key
-Has their own chat history
-Has their own memory
-Has their own local file index
-Has their own settings
-Can optionally allow the agent to control their PC (permission required every time for sensitive actions)
-Never sees another user's data
+---
+
+# Project Vision
+
+The goal of this project is to build a production-grade AI Agent platform that anyone can self-host.
+
+Each user can:
+
+- Create an account
+- Log in securely
+- Connect their own Gemini API key
+- Maintain private chat history
+- Store long-term AI memory
+- Index and search local files
+- Configure personal settings
+- Grant or deny permissions for sensitive actions
+- Keep all data isolated from other users
 
 Think of it as:
 
-"Open-source Jarvis that anyone can self-host."
+> **"An open-source Jarvis that anyone can run on their own computer."**
 
-This is much stronger than a simple chatbot because it demonstrates backend engineering, security, AI integration, system design, and frontend skills.
+Unlike a simple chatbot, this project demonstrates real-world software engineering concepts including authentication, databases, AI integration, clean architecture, and frontend development.
 
-I would avoid LangChain as the foundation
+---
 
-Many beginners start with LangChain and never learn how agents actually work.
+# Project Goals
 
-Instead:
+This project is designed to teach how modern AI applications are actually built.
 
-Build the core agent yourself.
-Add professional libraries only when they solve a real problem.
+Instead of hiding everything behind frameworks, we'll build the core systems ourselves and introduce libraries only when they solve real engineering problems.
 
-That way, you'll understand every layer.
+By the end of the project, you'll understand every layer of the application—from the frontend to the AI engine.
 
-Suggested Tech Stack
-Frontend
-React
-TypeScript
-Vite
-Tailwind CSS
-Shadcn UI
-React Query
-React Router
-Framer Motion
-Backend
-Python
-FastAPI
-SQLAlchemy
-Alembic
-Pydantic
-JWT Authentication
-AI
-Gemini API
-Google AI SDK
+---
 
-Later:
+# Tech Stack
 
-Ollama support
-OpenAI-compatible APIs
-Memory
-PostgreSQL
-pgvector
-ChromaDB (optional later)
-Search
-FAISS or pgvector
-Sentence Transformers
-Background Jobs
-Celery or Dramatiq (later)
-Redis
-File Watching
-Watchdog
-Permissions
+## Frontend
 
-Every sensitive tool prompts the user, for example:
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- shadcn/ui
+- React Query
+- React Router
+- Framer Motion
 
-"AI wants to delete Downloads/test.txt"
+---
 
-Buttons:
+## Backend
 
-Allow once
-Always allow
-Deny
+- Python
+- FastAPI
+- SQLAlchemy
+- Alembic
+- PostgreSQL
+- Pydantic
+- JWT Authentication
 
-This is much safer than giving the model unrestricted control.
+---
 
-Core Features
-Authentication
-Register
-Login
-JWT
-Refresh Token
-Forgot Password (optional)
-User Profiles
-AI Chat
-Streaming responses
-Markdown
-Code highlighting
-Conversation history
-Memory
-Short-term memory
-Long-term memory
-Semantic search
-User preferences
-Knowledge Base
+## AI
 
-Upload:
+- Gemini API
+- Google AI SDK
 
-PDF
-DOCX
-TXT
-Markdown
+---
 
-Ask questions about them.
+## Planned Integrations
 
-Local File Search
+### AI Providers
 
-Search:
+- Gemini
+- Ollama *(Future)*
+- OpenAI Compatible APIs *(Future)*
 
-Documents
-Code
-Notes
+### Memory
 
-Only after indexing.
+- PostgreSQL
+- pgvector
+- ChromaDB *(Optional)*
 
-Browser Tools
-Google Search
-Open websites
-Summarize pages
-System Tools
+### Search
 
-With permission:
+- FAISS
+- pgvector
+- Sentence Transformers
 
-Open apps
-Create folders
-Rename files
-Delete files
-Run terminal commands
-Coding Assistant
-Explain code
-Generate code
-Review projects
-Fix bugs
-Voice
-Speech to text
-Text to speech
-Plugin System
+### Background Jobs
 
-Users can add new tools later.
+- Redis
+- Celery *(or Dramatiq)*
 
-Settings
-Theme
-AI Provider
-API Key
-Memory
-Permissions
-Things You'll Learn
+### File Monitoring
 
-Instead of "using AI libraries," you'll learn why they exist.
+- Watchdog
 
-Python
-OOP
-Modules
-Packages
-Async programming
-Decorators
-Type hints
-Context managers
-Backend
-REST APIs
-JWT
-Dependency Injection
-Middleware
-Authentication
-Authorization
-Validation
-AI
-Prompt Engineering
-Function Calling
-Tool Calling
-Context Windows
-Embeddings
-RAG
-Vector Search
-Agent Loops
-Databases
-SQL
-PostgreSQL
-ORM
-Transactions
-Relationships
-Migrations
-Architecture
-Clean Architecture
-Repository Pattern
-Service Layer
-Dependency Injection
-SOLID principles
-DevOps
-Docker
-Environment Variables
-Logging
-Testing
-CI/CD
-Deployment
-Project Structure (Target)
-ai-agent/
+---
 
+# Core Features
+
+## Authentication
+
+- User Registration
+- Login
+- JWT Authentication
+- Refresh Tokens
+- Forgot Password *(Optional)*
+
+---
+
+## AI Chat
+
+- Streaming Responses
+- Markdown Support
+- Code Highlighting
+- Conversation History
+
+---
+
+## Memory System
+
+- Short-Term Memory
+- Long-Term Memory
+- Semantic Search
+- User Preferences
+
+---
+
+## Knowledge Base
+
+Upload and chat with:
+
+- PDF
+- DOCX
+- TXT
+- Markdown
+
+---
+
+## Local File Search
+
+Search indexed:
+
+- Documents
+- Source Code
+- Notes
+
+---
+
+## Browser Tools
+
+- Google Search
+- Open Websites
+- Summarize Web Pages
+
+---
+
+## System Tools
+
+With user permission:
+
+- Open Applications
+- Create Folders
+- Rename Files
+- Delete Files
+- Execute Terminal Commands
+
+---
+
+## Coding Assistant
+
+- Explain Code
+- Generate Code
+- Review Projects
+- Fix Bugs
+
+---
+
+## Voice
+
+- Speech-to-Text
+- Text-to-Speech
+
+---
+
+## Plugin System
+
+Users can extend the AI Agent by creating custom tools.
+
+---
+
+## Settings
+
+- Theme
+- AI Provider
+- API Keys
+- Memory Configuration
+- Permission Settings
+
+---
+
+# Permission System
+
+Sensitive actions always require user approval.
+
+Example:
+
+```
+AI wants to delete:
+
+Downloads/test.txt
+```
+
+Available options:
+
+- Allow Once
+- Always Allow
+- Deny
+
+This prevents the AI from performing dangerous operations without explicit user consent.
+
+---
+
+# Project Structure
+
+```text
+AI-Agent/
+│
 ├── frontend/
 │
 ├── backend/
@@ -219,120 +250,216 @@ ai-agent/
 │
 ├── database/
 │
-├── docs/
-│
-├── tests/
-│
-└── docker/
-Learning Roadmap (About 6 Weeks)
-
-Week 1: Python refresh, FastAPI basics, project setup, authentication, database design.
-
-Week 2: Chat backend, Gemini integration, streaming responses, frontend chat UI.
-
-Week 3: Conversation history, memory system, embeddings, semantic search.
-
-Week 4: Tool system, permissions, local file access, browser search, document ingestion.
-
-Week 5: RAG, coding assistant features, settings, user profiles, plugin architecture.
-
-Week 6: Voice, polishing, testing, Docker, documentation, production-ready GitHub repository.
-
-One feature that would make your project stand out
-
-Instead of hardcoding tools, build a Tool Registry.
-
-Each tool (open browser, search files, summarize PDF, etc.) follows a common interface and registers itself with the agent. When you add a new capability, you simply add another tool implementation without changing the core agent.
-
-This demonstrates extensibility and good software architecture—something recruiters notice.
-
-One last recommendation
-
-Treat this as a software engineering project that happens to use AI, not an AI demo.
-
-That means:
-
-Write clean, modular code.
-Keep commits small and meaningful.
-Document architectural decisions.
-Add tests as features stabilize.
-Build incrementally, understanding each concept before moving on.
-
-By the end, you'll have a portfolio project that showcases Python, FastAPI, React, databases, authentication, AI integration, system design, and production practices—all in a single repository.
-
-# AI Agent
-
-A production-grade self-hosted AI Agent built with FastAPI, React, PostgreSQL, and Gemini.
-
-## Tech Stack
-
-### Frontend
-
-- React
-- TypeScript
-- Vite
-- Tailwind CSS
-- shadcn/ui
-
-### Backend
-
-- FastAPI
-- SQLAlchemy
-- PostgreSQL
-- JWT Authentication
-
-### AI
-
-- Gemini API
-
----
-
-## Features
-
-- User Authentication
-- Chat Interface
-- Conversation History
-- AI Memory
-- RAG
-- Local File Search
-- Tool Calling
-- Plugin System
-- Permission Management
-
----
-
-## Project Structure
-
-```text
-AI-Agent/
-│
-├── backend/
-├── frontend/
-├── docs/
 ├── docker/
+│
+├── docs/
+│
 ├── tests/
+│
 └── README.md
 ```
 
 ---
 
-## Getting Started
+# Development Roadmap
 
-Backend
+## Week 1
+
+- Python Refresh
+- FastAPI Fundamentals
+- Project Setup
+- Authentication
+- Database Design
+
+---
+
+## Week 2
+
+- Gemini Integration
+- Chat Backend
+- Streaming Responses
+- Frontend Chat Interface
+
+---
+
+## Week 3
+
+- Conversation History
+- Memory System
+- Embeddings
+- Semantic Search
+
+---
+
+## Week 4
+
+- Tool Calling
+- Permission System
+- Local File Access
+- Browser Search
+- Document Processing
+
+---
+
+## Week 5
+
+- RAG
+- Coding Assistant
+- User Profiles
+- Plugin Architecture
+- Settings
+
+---
+
+## Week 6
+
+- Voice Features
+- Testing
+- Docker
+- Documentation
+- Production Deployment
+
+---
+
+# What You'll Learn
+
+## Python
+
+- OOP
+- Modules & Packages
+- Async Programming
+- Decorators
+- Type Hints
+- Context Managers
+
+---
+
+## Backend Development
+
+- REST APIs
+- Authentication
+- Authorization
+- Middleware
+- Dependency Injection
+- Validation
+
+---
+
+## AI Engineering
+
+- Prompt Engineering
+- Function Calling
+- Tool Calling
+- Context Windows
+- Embeddings
+- RAG
+- Vector Search
+- Agent Loops
+
+---
+
+## Databases
+
+- SQL
+- PostgreSQL
+- SQLAlchemy ORM
+- Relationships
+- Transactions
+- Alembic Migrations
+
+---
+
+## Software Architecture
+
+- Clean Architecture
+- Repository Pattern
+- Service Layer
+- SOLID Principles
+- Dependency Injection
+
+---
+
+## DevOps
+
+- Docker
+- Environment Variables
+- Logging
+- Testing
+- CI/CD
+- Deployment
+
+---
+
+# What Makes This Project Different?
+
+Instead of hardcoding tools into the AI Agent, we'll build a **Tool Registry**.
+
+Each tool follows a common interface and registers itself with the agent.
+
+For example:
+
+- Browser Search
+- File Search
+- PDF Reader
+- Terminal
+- Calculator
+
+Adding a new tool won't require changing the core AI engine.
+
+This demonstrates extensibility, scalability, and clean software architecture.
+
+---
+
+# Development Philosophy
+
+This is **not** an AI demo.
+
+It is a production-style software engineering project.
+
+Throughout the project we'll focus on:
+
+- Clean, modular code
+- Small and meaningful Git commits
+- Proper documentation
+- Scalable architecture
+- Automated testing
+- Understanding every concept before using libraries
+
+---
+
+# Getting Started
+
+## Clone the Repository
+
+```bash
+git clone <repository-url>
+
+cd AI-Agent
+```
+
+---
+
+## Backend Setup
 
 ```bash
 cd backend
 
 python -m venv .venv
 
+# Windows
 .venv\Scripts\activate
+
+# Linux / macOS
+source .venv/bin/activate
 
 pip install -r requirements.txt
 
 uvicorn app.main:app --reload
 ```
 
-Frontend
+---
+
+## Frontend Setup
 
 ```bash
 cd frontend
@@ -341,3 +468,17 @@ npm install
 
 npm run dev
 ```
+
+---
+
+# Project Status
+
+🚧 Currently under active development.
+
+Features are being built incrementally while maintaining production-quality architecture and documentation.
+
+---
+
+# License
+
+This project is licensed under the MIT License.
