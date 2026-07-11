@@ -1,11 +1,14 @@
-"""""
-Security utilities for the application.
+from pwdlib import PasswordHash
+password_hash = PasswordHash.recommended()
 
-Later this module will contain:
+def hash_password(password: str) -> str:
+    return password_hash.hash(password)
 
-- Password hashing
-- Password verification
-- JWT token creation
-- JWT token validation
-- Permission helpers
-"""
+def verify_password(
+        plain_password: str,
+        hashed_password: str,
+) -> bool:
+    return password_hash.verify(
+        plain_password,
+        hashed_password,
+    )
