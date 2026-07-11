@@ -1,32 +1,4 @@
-Excellent. This lesson is where everything we've learned finally comes together.
-
-Until now, we've built the foundation:
-
-* Project structure
-* Configuration
-* PostgreSQL
-* SQLAlchemy
-* Models
-* Alembic
-* Database Sessions
-* Password Hashing
-* JWT Concepts
-
-Now we're going to build our **first real authentication system**.
-
-By the end of this lesson, a user will be able to:
-
-* Register
-* Login
-* Receive a JWT
-* Access protected endpoints
-* Be identified by the backend
-
-This is a huge milestone.
-
----
-
-# Phase 1 — Lesson 14: Building JWT Authentication in FastAPI
+## Building JWT Authentication in FastAPI
 
 ## Goal
 

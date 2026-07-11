@@ -1,12 +1,4 @@
-Excellent. This lesson is where your project starts looking like a **real production backend**.
-
-Up to this point, we've learned many individual concepts. Now we'll connect them into a clean architecture that will scale to thousands of lines of code.
-
-This is the architecture we'll use for **every feature** in our AI Agent—not just users.
-
----
-
-# Phase 1 — Lesson 15: Repository Pattern, Service Layer & Building the User Module
+## Repository Pattern, Service Layer & Building the User Module
 
 ## Goal
 
