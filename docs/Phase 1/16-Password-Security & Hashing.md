@@ -741,21 +741,4 @@ If you can explain these concepts clearly, you've understood one of the most imp
 
 ---
 
-# Lesson 13 Preview — JWT Authentication
 
-Now that passwords are secure, we'll build the rest of the authentication system.
-
-You'll learn:
-
-* What JWT (JSON Web Token) is
-* Stateless authentication
-* Access Tokens
-* Refresh Tokens
-* JWT structure (`Header.Payload.Signature`)
-* Signing vs Encryption
-* Token expiration
-* Login and logout flow
-* Protected routes
-* Implementing authentication in FastAPI
-
-By the end of Lesson 13, users will be able to register, log in, receive a JWT, and access protected endpoints in our AI Agent.
