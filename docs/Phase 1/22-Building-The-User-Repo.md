@@ -1,57 +1,97 @@
-## Building the User Repository (SQLAlchemy 2.0)
-
-This lesson is where your backend talks to PostgreSQL for the first time through a proper repository.
-
-Until now:
-
-```text
-Frontend
-    ↓
-FastAPI
-```
-
-After today:
-
-```text
-Frontend
-    ↓
-FastAPI
-    ↓
-Repository
-    ↓
-PostgreSQL
-```
-
-This is your first real database layer.
+# Building the User Repository (SQLAlchemy 2.0)
 
 ---
 
-# Goal
+# Learning Objectives
 
-By the end of this lesson you'll understand:
+By the end of this lesson, you will understand:
 
-* What a Repository actually is
-* Why we use the Repository Pattern
-* SQLAlchemy 2.0 querying
-* `select()` vs `query()`
-* Creating records
-* Reading records
-* Transactions
-* `commit()`
-* `refresh()`
-* Why repositories should NOT contain business logic
+- What a Repository is
+- Why we use the Repository Pattern
+- The responsibilities of a Repository
+- SQLAlchemy 2.0 querying using `select()`
+- The difference between `select()` and the legacy `query()`
+- How to read data from PostgreSQL
+- How to insert data into PostgreSQL
+- What transactions are
+- Why `commit()` is required
+- Why `refresh()` is required
+- Why repositories should never contain business logic
 
 ---
 
-# What is a Repository?
+# Where We Are in the Project
 
-Imagine your Service needs a user.
+So far, our application has looked like this:
 
-Should it know SQL?
+```text
+React Frontend
+        │
+        ▼
+FastAPI API
+```
 
-No.
+Our API could receive requests, but it had no way to interact with the database.
 
-Instead it asks someone else.
+After today's lesson, the architecture becomes:
+
+```text
+React Frontend
+        │
+        ▼
+FastAPI API
+        │
+        ▼
+Service Layer
+        │
+        ▼
+Repository Layer
+        │
+        ▼
+PostgreSQL Database
+```
+
+Today we are building the **Repository Layer**.
+
+This is the first time our backend communicates directly with PostgreSQL.
+
+---
+
+# Understanding the Repository Pattern
+
+## What is a Repository?
+
+A Repository is a class responsible for interacting with the database.
+
+Instead of allowing every part of the application to write SQL queries, we create one dedicated layer that handles all database operations.
+
+The rest of the application simply asks the repository for data.
+
+---
+
+## Why Do We Need a Repository?
+
+Imagine your authentication service needs to find a user.
+
+Without a repository:
+
+```text
+Auth Service
+
+↓
+
+SQL Query
+
+↓
+
+Database
+```
+
+Now every service in your application must know SQL.
+
+As the project grows, SQL becomes scattered throughout the codebase.
+
+Instead, we introduce a Repository.
 
 ```text
 Auth Service
@@ -62,34 +102,38 @@ User Repository
 
 ↓
 
-Database
+PostgreSQL
 ```
 
-The Repository is the only layer responsible for talking to PostgreSQL.
+Now only one layer understands how to communicate with the database.
+
+This keeps the rest of the application clean and maintainable.
 
 ---
 
-# Real World Analogy
+# Real-World Analogy
 
-Imagine a restaurant.
+Think about ordering food in a restaurant.
 
-Customer:
+```
+Customer
 
-> I want Pizza.
+↓
 
-Waiter:
+Waiter
 
-Takes order.
+↓
 
-Kitchen:
-
-Makes pizza.
+Kitchen
+```
 
 The customer never walks into the kitchen.
 
-Likewise,
+Instead, the waiter communicates with the kitchen on the customer's behalf.
 
-```text
+Our application follows the same idea.
+
+```
 API
 
 ↓
@@ -105,17 +149,29 @@ Repository
 Database
 ```
 
-The Service never writes SQL.
+The Service never communicates directly with PostgreSQL.
+
+The Repository acts as the bridge.
 
 ---
 
-# Responsibilities
+# Responsibilities of a Repository
 
-A repository should only do database operations.
+A Repository has one responsibility:
 
-Good:
+**Perform database operations.**
 
-```text
+Typical responsibilities include:
+
+- Creating records
+- Reading records
+- Updating records
+- Deleting records
+- Listing records
+
+Examples:
+
+```
 Create User
 
 Find User
@@ -127,37 +183,40 @@ Delete User
 List Users
 ```
 
-Bad:
+---
 
-```text
-Hash Password
+## What Does NOT Belong in a Repository?
 
-Generate JWT
+A Repository should never contain business logic.
 
-Send Email
+The following responsibilities belong elsewhere:
 
-Check Permissions
-```
+- Hashing passwords
+- Generating JWT tokens
+- Sending emails
+- Checking permissions
+- Returning HTTP responses
+- Validating business rules
 
-Those belong elsewhere.
+The Repository should only retrieve and store data.
 
 ---
 
 # Project Structure
 
-Create:
+Create the following file:
 
 ```text
 app/
-
-repositories/
-
-    user_repository.py
+└── repositories/
+    └── user_repository.py
 ```
+
+This repository will contain all database operations related to the `User` model.
 
 ---
 
-# Imports
+# Required Imports
 
 ```python
 from sqlalchemy import select
@@ -168,27 +227,49 @@ from app.models.user import User
 
 ---
 
-## Why `select()`?
+# Understanding the Imports
 
-Older tutorials use:
+### `select`
+
+Used to build SQL queries using SQLAlchemy's modern API.
+
+---
+
+### `Session`
+
+Represents an active database session.
+
+All database operations are executed through the session.
+
+---
+
+### `User`
+
+Our SQLAlchemy model representing the `users` table.
+
+---
+
+# Why Use `select()` Instead of `query()`?
+
+Many tutorials still use:
 
 ```python
 db.query(User)
 ```
 
-This is the legacy style.
+This is the older SQLAlchemy API.
 
-SQLAlchemy 2.0 recommends:
+SQLAlchemy 2.0 recommends using:
 
 ```python
 select(User)
 ```
 
-We'll use the modern API throughout this project.
+Throughout this project, we'll consistently use the modern SQLAlchemy 2.0 style.
 
 ---
 
-# Repository Class
+# Creating the Repository Class
 
 ```python
 class UserRepository:
@@ -197,41 +278,53 @@ class UserRepository:
         self.db = db
 ```
 
-Remember Lesson 11.
+---
 
-We never create:
+# Understanding the Constructor
+
+The Repository requires access to the database session.
+
+Notice that we are **not** creating a new session.
 
 ```python
 SessionLocal()
 ```
 
-Dependency Injection already gave us the Session.
+should never appear inside a repository.
+
+Instead, the session is provided through Dependency Injection.
+
+This keeps session management centralized and prevents unnecessary database connections.
 
 ---
 
-# Method 1 — Get User by Email
+# Method 1 — Find a User by Email
 
-Let's think first.
+## Problem
 
-Input:
+Given an email address:
 
 ```text
-Email
+abc@gmail.com
 ```
 
-Output:
+We want to retrieve:
 
-```text
+```
 User
+```
 
 or
 
+```
 None
 ```
 
+if no matching user exists.
+
 ---
 
-### SQL Equivalent
+## SQL Equivalent
 
 ```sql
 SELECT *
@@ -242,7 +335,7 @@ LIMIT 1;
 
 ---
 
-### SQLAlchemy
+## SQLAlchemy Implementation
 
 ```python
 def get_by_email(
@@ -260,15 +353,15 @@ def get_by_email(
 
 ---
 
-## Let's Understand Every Line
+# Understanding Every Line
 
-### Step 1
+## Step 1 — Build the Query
 
 ```python
 statement = select(User)
 ```
 
-Means:
+Equivalent SQL:
 
 ```sql
 SELECT * FROM users
@@ -276,13 +369,13 @@ SELECT * FROM users
 
 ---
 
-### Step 2
+## Step 2 — Add a Filter
 
 ```python
 .where(User.email == email)
 ```
 
-Adds
+Equivalent SQL:
 
 ```sql
 WHERE email = ?
@@ -290,57 +383,57 @@ WHERE email = ?
 
 ---
 
-### Step 3
+## Step 3 — Execute the Query
 
 ```python
 self.db.scalar(statement)
 ```
 
-This executes the query.
+This sends the query to PostgreSQL.
 
-Returns:
+If a matching row exists:
 
-```python
+```
 User
+```
+
+is returned.
+
+Otherwise:
+
+```
+None
+```
+
+is returned.
+
+---
+
+# Why Use `scalar()`?
+
+Each email address should be unique.
+
+Therefore we expect either:
+
+```
+One User
 ```
 
 or
 
-```python
-None
 ```
+No User
+```
+
+We do not need a list of users.
+
+`scalar()` returns a single model instance or `None`, making it ideal for this use case.
 
 ---
 
-# Why `scalar()`?
+# Method 2 — Find a User by ID
 
-Suppose only one user should exist.
-
-```text
-Email
-
-↓
-
-One User
-```
-
-We don't need:
-
-```python
-list[User]
-```
-
-We only need
-
-```python
-User | None
-```
-
----
-
-# Method 2 — Get User by ID
-
-Very similar.
+The implementation is nearly identical.
 
 ```python
 def get_by_id(
@@ -356,148 +449,15 @@ def get_by_id(
     return self.db.scalar(statement)
 ```
 
-Notice how reusable `select()` is.
+Notice how the same query pattern can be reused with different filters.
 
 ---
 
-# Method 3 — Create User
+# Method 3 — Create a User
 
-This one is different.
+Unlike the previous methods, this operation writes data to the database.
 
-We're inserting data.
-
-Flow:
-
-```text
-Receive User
-
-↓
-
-Add
-
-↓
-
-Commit
-
-↓
-
-Refresh
-
-↓
-
-Return User
-```
-
-Implementation:
-
-```python
-def create(
-    self,
-    user: User,
-) -> User:
-
-    self.db.add(user)
-
-    self.db.commit()
-
-    self.db.refresh(user)
-
-    return user
-```
-
----
-
-# Understanding Every Line
-
-## `add()`
-
-```python
-self.db.add(user)
-```
-
-Tells SQLAlchemy:
-
-> "Track this object."
-
-Nothing has been written yet.
-
----
-
-## `commit()`
-
-```python
-self.db.commit()
-```
-
-Actually saves the row.
-
-Without commit:
-
-```text
-Database unchanged.
-```
-
----
-
-## `refresh()`
-
-This confuses almost everyone.
-
-Imagine:
-
-Before insert:
-
-```text
-id = None
-```
-
-Database inserts:
-
-```text
-id = 1
-```
-
-Your Python object still says:
-
-```text
-None
-```
-
-Until:
-
-```python
-refresh(user)
-```
-
-Now:
-
-```text
-id = 1
-```
-
-The object is synchronized with PostgreSQL.
-
----
-
-# Why Refresh Matters
-
-Suppose we immediately return:
-
-```json
-{
-    "id": null
-}
-```
-
-Bad.
-
-Refresh reloads the latest values.
-
----
-
-# Transaction Lifecycle
-
-Creating a user looks like:
+The process looks like this:
 
 ```text
 User Object
@@ -525,29 +485,161 @@ Return User
 
 ---
 
-# Should Repository Commit?
+## Implementation
 
-This is an advanced topic.
+```python
+def create(
+    self,
+    user: User,
+) -> User:
 
-For small projects:
+    self.db.add(user)
+
+    self.db.commit()
+
+    self.db.refresh(user)
+
+    return user
+```
+
+---
+
+# Understanding Every Line
+
+## `add()`
+
+```python
+self.db.add(user)
+```
+
+Adds the object to SQLAlchemy's session.
+
+At this point, **nothing has been written to PostgreSQL**.
+
+---
+
+## `commit()`
+
+```python
+self.db.commit()
+```
+
+Writes all pending changes to the database.
+
+Without calling `commit()`, the inserted row will not be permanently saved.
+
+---
+
+## `refresh()`
+
+```python
+self.db.refresh(user)
+```
+
+Reloads the object from PostgreSQL.
+
+This ensures the Python object contains the latest values generated by the database.
+
+---
+
+# Why is `refresh()` Important?
+
+Before insertion:
 
 ```text
-Repository
+id = None
+```
+
+After PostgreSQL inserts the row:
+
+```text
+id = 1
+```
+
+However, your Python object may still contain:
+
+```text
+id = None
+```
+
+Calling:
+
+```python
+refresh(user)
+```
+
+synchronizes the object with the database so it now contains:
+
+```text
+id = 1
+```
+
+Without `refresh()`, you might return incomplete data to the client.
+
+---
+
+# Understanding Transactions
+
+Creating a user follows this lifecycle:
+
+```text
+Create User Object
 
 ↓
 
-Commit
+Track Object
+
+↓
+
+Begin Transaction
+
+↓
+
+INSERT INTO users
+
+↓
+
+COMMIT
+
+↓
+
+Reload Object
+
+↓
+
+Return User
 ```
 
-is acceptable.
+A transaction ensures database changes are applied safely and consistently.
 
-For large enterprise systems,
+---
 
-the Service or Unit of Work often controls commits.
+# Should the Repository Call `commit()`?
 
-We'll keep commits inside the repository for now to keep the project easier to understand.
+This depends on the application's architecture.
 
-Later, when we discuss the **Unit of Work Pattern**, we'll refactor this.
+### Small and Medium Projects
+
+It's perfectly acceptable for repositories to call:
+
+```python
+commit()
+```
+
+This keeps the code simple and easy to understand.
+
+---
+
+### Large Enterprise Applications
+
+Many enterprise applications use a **Unit of Work** pattern.
+
+In that architecture:
+
+- The Repository performs database operations.
+- The Service controls when transactions are committed.
+
+We'll use the simpler approach for now and refactor later when we study the Unit of Work pattern.
 
 ---
 
@@ -562,64 +654,50 @@ from app.models.user import User
 
 class UserRepository:
 
-    def __init__(
-        self,
-        db: Session,
-    ):
+    def __init__(self, db: Session):
         self.db = db
 
-    def get_by_email(
-        self,
-        email: str,
-    ) -> User | None:
-
+    def get_by_email(self, email: str) -> User | None:
         statement = (
             select(User)
             .where(User.email == email)
         )
-
         return self.db.scalar(statement)
 
-    def get_by_id(
-        self,
-        user_id: int,
-    ) -> User | None:
-
+    def get_by_id(self, user_id: int) -> User | None:
         statement = (
             select(User)
             .where(User.id == user_id)
         )
-
         return self.db.scalar(statement)
 
-    def create(
-        self,
-        user: User,
-    ) -> User:
-
+    def create(self, user: User) -> User:
         self.db.add(user)
-
         self.db.commit()
-
         self.db.refresh(user)
-
         return user
 ```
 
 ---
 
-# Visual Flow
+# Visual Request Flow
+
+### Finding a User
 
 ```text
+API Request
+
+↓
+
 Auth Service
 
 ↓
 
-Repository.get_by_email()
+User Repository
 
 ↓
 
-SELECT
+SELECT Query
 
 ↓
 
@@ -627,25 +705,35 @@ PostgreSQL
 
 ↓
 
-User
+User Object
 
 ↓
 
 Service
+
+↓
+
+API Response
 ```
 
-Registration:
+---
+
+### Creating a User
 
 ```text
+API Request
+
+↓
+
 Auth Service
 
 ↓
 
-Repository.create()
+User Repository
 
 ↓
 
-INSERT
+INSERT Query
 
 ↓
 
@@ -653,44 +741,50 @@ COMMIT
 
 ↓
 
-RETURN USER
+PostgreSQL
+
+↓
+
+Saved User
+
+↓
+
+Service
+
+↓
+
+API Response
 ```
 
 ---
 
 # Common Beginner Mistakes
 
-### ❌ Hashing Passwords Here
+### ❌ Hashing passwords inside the Repository
 
-Wrong.
-
-Repositories shouldn't know security.
+Password hashing belongs in the **Service Layer**.
 
 ---
 
-### ❌ Creating JWT Here
+### ❌ Generating JWT tokens
 
-Wrong.
-
-Authentication belongs to the Service layer.
+Authentication belongs in the **Service Layer**.
 
 ---
 
-### ❌ Using `SessionLocal()` Inside Repository
+### ❌ Creating `SessionLocal()` inside the Repository
 
-Wrong.
-
-Dependency Injection already provides a Session.
+The session should always come from Dependency Injection.
 
 ---
 
-### ❌ Returning HTTP Responses
+### ❌ Returning HTTP responses
 
-Repositories should never know about HTTP.
+Repositories should not know anything about HTTP or FastAPI.
 
 ---
 
-### ❌ Mixing Business Logic
+### ❌ Mixing business rules with database operations
 
 Avoid code like:
 
@@ -699,13 +793,13 @@ if email_exists:
     raise HTTPException(...)
 ```
 
-The repository should simply return the data.
+The Repository should simply return data.
 
-The Service decides what it means.
+The Service decides what that data means.
 
 ---
 
-# Modern SQLAlchemy Pattern
+# SQLAlchemy 2.0 Best Practice
 
 Instead of:
 
@@ -713,7 +807,7 @@ Instead of:
 db.query(User)
 ```
 
-We'll consistently use:
+Prefer:
 
 ```python
 statement = (
@@ -724,23 +818,24 @@ statement = (
 db.scalar(statement)
 ```
 
-This is the recommended SQLAlchemy 2.0 style and is what you'll see in modern production code.
+This is the modern SQLAlchemy 2.0 approach and is the style we'll use throughout this project.
 
 ---
 
-# What You Learned Today
+# Key Takeaways
 
-You now understand:
+After completing this lesson, you should understand:
 
-* The Repository Pattern
-* SQLAlchemy 2.0 `select()`
-* `scalar()`
-* `add()`
-* `commit()`
-* `refresh()`
-* Repository responsibilities
-* Why repositories avoid business logic
-* How Services communicate with the database
+- The purpose of the Repository Pattern.
+- Why database access is isolated from business logic.
+- How to build queries using `select()`.
+- When to use `scalar()`.
+- How `add()`, `commit()`, and `refresh()` work together.
+- Why repositories should only perform database operations.
+- How the Service Layer communicates with PostgreSQL through the Repository Layer.
 
 ---
 
+# What's Next?
+
+In the next lesson, we'll build the **Authentication Service**, where we'll use the `UserRepository` to register users, validate existing accounts, hash passwords securely, and prepare our application for JWT-based authentication.
