@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm  import Session
+from fastapi import APIRouter, Depends, status
+from sqlalchemy.orm import Session
 
 from app.database.session import get_db
 from app.schemas.user import (
@@ -9,10 +9,12 @@ from app.schemas.user import (
     Token,
 )
 from app.services.auth_service import AuthService
+
 router = APIRouter(
     prefix="/auth",
     tags=["Authentication"],
 )
+
 
 @router.post(
     "/register",
@@ -25,7 +27,8 @@ def register(
 ):
     service = AuthService(db)
     return service.register_user(user)
-    
+
+
 @router.post(
     "/login",
     response_model=Token,
@@ -35,8 +38,8 @@ def login(
     db: Session = Depends(get_db),
 ):
     service = AuthService(db)
-    token = service.login_user(credentials)
     return service.login_user(credentials)
+
 
 @router.post(
     "/refresh",
@@ -47,6 +50,4 @@ def refresh_token(
     db: Session = Depends(get_db),
 ):
     service = AuthService(db)
-    return service.refresh_access_token(
-        refresh_token
-    )
+    return service.refresh_access_token(refresh_token)

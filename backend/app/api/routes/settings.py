@@ -8,7 +8,7 @@ from app.schemas.settings import (
     UserSettingsResponse,
     UserSettingsUpdate,
 )
-from app.services.settings_service import SettingsService
+from app.services.settings_services import SettingsService
 
 router = APIRouter(
     prefix="/settings",
@@ -25,7 +25,6 @@ def get_settings(
     db: Session = Depends(get_db),
 ):
     service = SettingsService(db)
-
     return service.get_settings(current_user.id)
 
 
@@ -39,7 +38,6 @@ def update_settings(
     db: Session = Depends(get_db),
 ):
     service = SettingsService(db)
-
     return service.update_settings(
         current_user.id,
         data,
