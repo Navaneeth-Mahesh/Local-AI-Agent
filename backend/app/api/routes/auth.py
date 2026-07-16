@@ -24,15 +24,7 @@ def register(
     db: Session = Depends(get_db),
 ):
     service = AuthService(db)
-
-    try:
-        return service.register_user(user)
-
-    except ValueError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail=str(exc),
-        )
+    return service.register_user(user)
     
 @router.post(
     "/login",
@@ -43,18 +35,18 @@ def login(
     db: Session = Depends(get_db),
 ):
     service = AuthService(db)
+    token = service.login_user(credentials)
+    return service.login_user(credentials)
 
-    try:
-        token = service.login_user(credentials)
-
-        return {
-            "access_token": token,
-            "token_type": "bearer",
-        }
-
-    except ValueError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=str(exc),
-        )    
-    
+@router.post(
+    "/refresh",
+    response_model=Token,
+)
+def refresh_token(
+    refresh_token: str,
+    db: Session = Depends(get_db),
+):
+    service = AuthService(db)
+    return service.refresh_access_token(
+        refresh_token
+    )

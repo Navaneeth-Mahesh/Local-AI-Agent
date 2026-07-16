@@ -3,8 +3,10 @@ from app.core.security import (
         hash_password,
         verify_password,
         create_access_token,
+        create_refresh_token,
 )
 
+from app.core.exceptions import(EmailAlreadyExistsException, InvalidCredentialsException,)
 from app.models.user import User
 from app.repositories.user_repository import UserRepository
 from app.schemas.user import (
@@ -54,6 +56,29 @@ class AuthService:
             raise ValueError(
                 "Invalid credentials."
             )
-        return create_access_token(
-            user.id
-        )
+        
+def refresh_access_token(
+    self,
+    refresh_token: str,
+):
+    payload = verify_token(
+        refresh_token,
+        "refresh",
+    )
+
+    if not payload:
+        raise InvalidCredentialsException()
+
+    return {
+        "access_token": create_access_token(
+            int(payload["sub"])
+        ),
+        "refresh_token": refresh_token,
+        "token_type": "bearer",
+    }
+
+    return {
+            "access_token": create_access_token(user.id),
+            "refresh_token": create_refresh_token(user.id),
+            "token_type": "bearer",
+        }
