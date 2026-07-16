@@ -28,3 +28,5 @@ htmlcov/
 
 # Database
 *.db
+
+test.db
