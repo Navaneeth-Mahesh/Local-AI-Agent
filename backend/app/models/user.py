@@ -37,4 +37,9 @@ class User(Base):
         uselist=False,
         cascade="all, delete-orphan",
     )
-    
+    ai_provider = relationship(
+        "AIProvider",
+        back_populates="user",
+        uselist=False,
+        cascade="all, delete-orphan"
+    )
