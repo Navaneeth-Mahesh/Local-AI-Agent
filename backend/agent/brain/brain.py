@@ -7,7 +7,7 @@ from agent.state.manager import AgentStateManager
 from agent.state.models import AgentState
 from agent.tools.context import ToolContext
 from agent.tools.manager import ToolManager
-
+from agent.brain.loop import AgentLoop
 
 class AgentBrain:
     """
@@ -80,3 +80,13 @@ class AgentBrain:
             response=llm_response.text,
             tool_results=tool_results,
         )
+    loop = AgentLoop(
+        planner=self._planner,
+        tool_manager=self._tool_manager,
+        llm_service=self._llm_service,
+        prompt_manager=self._prompt_manager,
+    )
+
+    plan, tool_results, llm_response = await loop.execute(
+    state
+    )
