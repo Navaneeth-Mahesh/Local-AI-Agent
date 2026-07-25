@@ -7,7 +7,7 @@ from agent.prompts.manager import PromptManager
 from agent.tools.manager import ToolManager
 from agent.tools.registry import ToolRegistry
 from agent.tools.calculator.tool import CalculatorTool
-
+from agent.permissions.manager import PermissionManager
 
 def get_agent_brain() -> AgentBrain:
 
@@ -23,6 +23,6 @@ def get_agent_brain() -> AgentBrain:
         ),
         prompt_manager=PromptManager(),
         planner=Planner(),
-        tool_manager=ToolManager(registry),
+        tool_manager=ToolManager(registry=registry, permission_manager=PermissionManager()),
         llm_service=get_llm_service(),
     )

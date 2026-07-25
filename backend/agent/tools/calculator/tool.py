@@ -13,6 +13,7 @@ class CalculatorTool(BaseTool):
             name="calculator",
             description="Perform arithmetic calculations.",
             requires_permission=False,
+            permission_type=None,
         )
 
     @property

@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from agent.permissions.enums import PermissionType
+
 
 @dataclass(slots=True, frozen=True)
 class ToolMetadata:
@@ -11,4 +13,6 @@ class ToolMetadata:
 
     description: str
 
-    requires_permission: bool = True
+    requires_permission: bool = False
+
+    permission_type: PermissionType | None = None
