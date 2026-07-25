@@ -41,6 +41,14 @@ class RuleBasedPlanningStrategy:
                 PlanStep(
                     step_type=PlanStepType.TOOL,
                     action="tool_selection",
+
+                    metadata={
+                        "tool":"calculator",
+
+                        "aruguments":{
+                            "expression":"2 + 2"
+                        }
+                    }
                 )
             )
 

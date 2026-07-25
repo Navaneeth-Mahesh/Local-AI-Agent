@@ -1,20 +1,21 @@
 from dataclasses import dataclass, field
-
+from typing import Any
 from agent.planner.enums import PlanStepType
 
 
 @dataclass(slots=True)
 class PlanStep:
     """
-    Represents one step in an execution plan.
+    Represents a single executable step in an execution plan.
     """
 
     step_type: PlanStepType
 
     action: str
 
-    metadata: dict = field(default_factory=dict)
-
+    metadata: dict[str, Any] = field(
+        default_factory=dict
+    )
 
 @dataclass(slots=True)
 class ExecutionPlan:
