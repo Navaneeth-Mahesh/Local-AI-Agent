@@ -29,7 +29,11 @@ class ToolManager:
                 output=f"Tool '{tool_name}' not found.",
             )
 
+        validated_arguments = tool.input_model(
+            **kwargs,
+        )
+
         return await tool.execute(
             context,
-            **kwargs,
+            validated_arguments,
         )

@@ -1,4 +1,7 @@
 from abc import ABC, abstractmethod
+from typing import Any
+
+from pydantic import BaseModel
 
 from agent.tools.context import ToolContext
 from agent.tools.metadata import ToolMetadata
@@ -13,16 +16,19 @@ class BaseTool(ABC):
     @property
     @abstractmethod
     def metadata(self) -> ToolMetadata:
+        ...
+
+    @property
+    @abstractmethod
+    def input_model(self) -> type[BaseModel]:
         """
-        Tool description.
+        Pydantic model used to validate tool arguments.
         """
 
     @abstractmethod
     async def execute(
         self,
         context: ToolContext,
-        **kwargs,
+        arguments: BaseModel,
     ) -> ToolResult:
-        """
-        Execute the tool.
-        """
+        ...
