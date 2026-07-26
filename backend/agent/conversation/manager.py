@@ -69,3 +69,18 @@ class ConversationManager(BaseConversationManager):
             role="assistant",
             content=content,
         )
+    async def create(
+        self,
+        *,
+        user_id: int,
+        title: str,
+    ) -> ConversationContext:
+
+    conversation = await self._conversation_repository.create(
+        title=title,
+        user_id=user_id,
+    )
+
+    return ConversationMapper.to_domain(
+        conversation
+    )

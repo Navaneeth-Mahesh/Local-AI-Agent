@@ -5,6 +5,7 @@ from app.api.routes.users import router as users_router
 from app.api.routes.settings import router as settings_router
 from app.api.routes.ai_provider import router as ai_provider_router
 from app.core.middleware import log_requests
+from app.api.routes import chat
 
 app = FastAPI(
     title="Local AI Agent API",
@@ -23,3 +24,6 @@ def root():
     return {
         "message": "AI Agent Backend!"
     }
+...
+
+app.include_router(chat.router)

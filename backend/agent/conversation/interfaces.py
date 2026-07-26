@@ -29,3 +29,11 @@ class BaseConversationManager(ABC):
         content: str,
     ) -> None:
         ...
+    @abstractmethod
+    async def create(
+        self,
+        *,
+        user_id: int,
+        title: str,
+    ) -> ConversationContext:
+        ... 
