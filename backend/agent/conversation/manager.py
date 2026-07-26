@@ -1,25 +1,50 @@
 from agent.conversation.interfaces import (
     BaseConversationManager,
 )
+from agent.conversation.mapper import (
+    ConversationMapper,
+)
 from agent.conversation.models import (
     ConversationContext,
+)
+from app.repositories.conversation_repository import (
+    ConversationRepository,
+)
+from app.repositories.message_repository import (
+    MessageRepository,
 )
 
 
 class ConversationManager(BaseConversationManager):
-    """
-    Coordinates conversation persistence.
 
-    Repository integration will be added
-    in the next lesson.
-    """
+    def __init__(
+        self,
+        conversation_repository: ConversationRepository,
+        message_repository: MessageRepository,
+    ) -> None:
+
+        self._conversation_repository = (
+            conversation_repository
+        )
+
+        self._message_repository = (
+            message_repository
+        )
 
     async def load(
         self,
         conversation_id: int,
     ) -> ConversationContext:
 
-        raise NotImplementedError
+        conversation = (
+            await self._conversation_repository.get_by_id(
+                conversation_id
+            )
+        )
+
+        return ConversationMapper.to_domain(
+            conversation
+        )
 
     async def append_user_message(
         self,
@@ -27,7 +52,11 @@ class ConversationManager(BaseConversationManager):
         content: str,
     ) -> None:
 
-        raise NotImplementedError
+        await self._message_repository.create(
+            conversation_id=conversation_id,
+            role="user",
+            content=content,
+        )
 
     async def append_assistant_message(
         self,
@@ -35,4 +64,8 @@ class ConversationManager(BaseConversationManager):
         content: str,
     ) -> None:
 
-        raise NotImplementedError
+        await self._message_repository.create(
+            conversation_id=conversation_id,
+            role="assistant",
+            content=content,
+        )
