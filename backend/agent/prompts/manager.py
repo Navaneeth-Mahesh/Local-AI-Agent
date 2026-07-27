@@ -12,24 +12,19 @@ class PromptManager:
     """
 
     def build_chat_prompt(
-        self,
-        conversation: str,
-        user_input: str,
+    self,
+    conversation: str,
+    user_input: str,
     ) -> str:
 
-        return PromptBuilder.build(
-            DEFAULT_CHAT,
-            system_prompt=SYSTEM_PROMPT,
-            conversation=conversation,
-            user_input=user_input,
-        )
+        return f"""
+    You are a helpful AI assistant.
 
-    def build_title_prompt(
-        self,
-        conversation: str,
-    ) -> str:
+    Conversation:
 
-        return PromptBuilder.build(
-            TITLE_GENERATION,
-            conversation=conversation,
-        )
+    {conversation}
+
+    Current User Message:
+
+    {user_input}
+    """

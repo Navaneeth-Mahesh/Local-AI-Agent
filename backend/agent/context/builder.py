@@ -27,3 +27,18 @@ class ContextBuilder:
             )
 
         return context
+    history = []
+
+if state.conversation:
+
+    for message in state.conversation.messages:
+
+        history.append(
+            f"{message.role}: {message.content}"
+        )
+
+history.append(
+    f"user: {state.user_input}"
+)
+
+return "\n".join(history)

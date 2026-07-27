@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 
 from agent.context.models import LLMContext
 from agent.state.enums import AgentStatus
-
+from agent.conversation.models import ConversationContext
 
 @dataclass(slots=True)
 class AgentState:
@@ -22,3 +22,6 @@ class AgentState:
     tool_results: list[str] = field(default_factory=list)
 
     metadata: dict = field(default_factory=dict)
+
+    conversation: ConversationContext | None = None
+    

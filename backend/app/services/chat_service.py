@@ -46,6 +46,7 @@ class ChatService:
 
         # Run agent
         result = await self._brain.run(
+            conversation=conversation,
             user_input=request.message,
         )
 

@@ -80,13 +80,19 @@ class AgentBrain:
             response=llm_response.text,
             tool_results=tool_results,
         )
-    loop = AgentLoop(
-        planner=self._planner,
-        tool_manager=self._tool_manager,
-        llm_service=self._llm_service,
-        prompt_manager=self._prompt_manager,
-    )
+        loop = AgentLoop(
+            planner=self._planner,
+            tool_manager=self._tool_manager,
+            llm_service=self._llm_service,
+            prompt_manager=self._prompt_manager,
+        )
 
-    plan, tool_results, llm_response = await loop.execute(
-    state
-    )
+        plan, tool_results, llm_response = await loop.execute(
+        state
+        )
+        async def run(
+    self,
+    *,
+    conversation,
+    user_input: str,
+):
