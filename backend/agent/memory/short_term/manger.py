@@ -2,7 +2,7 @@ from agent.conversation.models import ConversationContext
 from agent.memory.short_term.models import (ShortTermMemory,)
 from agent.memory.short_term.policy import (ShortTermMemoryPolicy,)
 from agent.memory.short_term.tokenizer import ( TokenCounter,)
-
+from agent.memory.short_term.summarizer import (ConversationSummarizer,)
 
 class ShortTermMemoryManager:
     """
@@ -12,9 +12,11 @@ class ShortTermMemoryManager:
 
     def __init__(
         self,
-        policy: ShortTermMemoryPolicy,
+        policy,
+        summarizer: ConversationSummarizer,
     ):
         self._policy = policy
+        self._summarizer = summarizer
 
 async def build(
     self,
@@ -62,3 +64,26 @@ async def build(
     return ShortTermMemory(
         messages=selected,
     )
+
+overflow = conversation.messages[
+    : len(conversation.messages)
+    - len(selected)
+]
+
+summary = None
+
+if (
+    overflow
+    and len(overflow)
+    >= self._policy.minimum_messages_before_summary
+    and self._policy.enable_summary
+):
+    summary = await self._summarizer.summarize(
+        overflow
+    )
+
+return ShortTermMemory(
+    messages=selected,
+    summary=summary,
+    token_count=used_tokens,
+)

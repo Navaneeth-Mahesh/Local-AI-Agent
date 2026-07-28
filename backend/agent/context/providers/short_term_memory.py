@@ -35,4 +35,15 @@ class ShortTermMemoryProvider(BaseContextProvider):
                 f"{message.role}: {message.content}"
             )
 
-        context.conversation = "\n".join(history)
+        parts = []
+
+        if memory.summary:
+            parts.append(
+                f"Conversation Summary:\n{memory.summary}"
+            )
+
+        parts.append(
+            "\n".join(history)
+        )
+
+        context.conversation = "\n\n".join(parts)

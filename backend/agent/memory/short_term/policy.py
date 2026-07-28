@@ -16,3 +16,7 @@ class ShortTermMemoryPolicy:
     reserve_tokens: int = 4000
 
     enable_summary: bool = True
+
+    summary_target_words: int = 300
+
+    minimum_message_before_summary: int = 50
