@@ -3,9 +3,6 @@ from agent.context.providers import BaseContextProvider
 
 
 class ContextBuilder:
-    """
-    Builds the complete context sent to the LLM.
-    """
 
     def __init__(
         self,
@@ -27,18 +24,3 @@ class ContextBuilder:
             )
 
         return context
-    history = []
-
-if state.conversation:
-
-    for message in state.conversation.messages:
-
-        history.append(
-            f"{message.role}: {message.content}"
-        )
-
-history.append(
-    f"user: {state.user_input}"
-)
-
-return "\n".join(history)
