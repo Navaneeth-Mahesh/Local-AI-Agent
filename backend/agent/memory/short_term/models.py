@@ -13,3 +13,10 @@ class ShortTermMemory:
     messages: list[ConversationMessage]
 
     summary: str | None = None
+
+    token_count: int = 0
+
+    return ShortTermMemory(
+        messages=selected,
+        token_count=used_tokens,
+    )

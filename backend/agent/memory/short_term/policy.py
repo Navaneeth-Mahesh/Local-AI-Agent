@@ -7,7 +7,11 @@ class ShortTermMemoryPolicy:
     Configuration for the STM manager.
     """
 
-    max_messages: int = 20
+    max_messages: int = 6000
+
+    reserved_response_token: int = 1500
+
+    minimum_message: int = 6
 
     reserve_tokens: int = 4000
 
