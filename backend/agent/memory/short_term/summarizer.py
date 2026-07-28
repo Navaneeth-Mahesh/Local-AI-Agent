@@ -10,9 +10,11 @@ class ConversationSummarizer:
 
     def __init__(
         self,
-        llm: BaseLLMService,
+        llm,
+        repository,
     ):
         self._llm = llm
+        self._repository = repository
 
     async def summarize(
         self,
@@ -45,3 +47,8 @@ Conversation:
         )
 
         return response.text
+    existing = await self._repository.get(
+        conversation_id
+            )
+    if existing:
+        return existing.summary
