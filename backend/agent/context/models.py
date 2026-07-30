@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 class ContextItem:
     source: str
     content: str
+    memories: str = ""
 
 @dataclass(slots=True)
 class LLMContext:
