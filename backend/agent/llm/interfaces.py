@@ -1,5 +1,12 @@
 from abc import ABC, abstractmethod
+from collections.abc import AsyncGenerator
 
+@abstractmethod
+async def stream(
+    self,
+    prompt,
+) -> AsyncGenerator[str, None]:
+    ...
 from .models import (
     LLMRequest,
     LLMResponse,

@@ -40,3 +40,18 @@ class GeminiProvider(BaseLLMProvider):
         return GeminiMapper.to_response(
             response
         )
+        async def stream(
+            self,
+            prompt,
+        ):
+
+            response = self._client.models.generate_content_stream(
+                model=self._model,
+                contents=prompt,
+            )
+
+            for chunk in response:
+
+                if chunk.text:
+
+                    yield chunk.text

@@ -6,7 +6,8 @@ from app.schemas.chat import (
     ChatResponse,
 )
 from app.services.chat_service import ChatService
-
+from fastapi import APIRouter
+from fastapi.responses import StreamingResponse
 router = APIRouter(
     prefix="/chat",
     tags=["Chat"],
@@ -26,4 +27,16 @@ async def chat(
     return await service.chat(
         user_id=current_user.id,
         request=request,
+    )
+
+@router.post("/stream")
+async def stream_chat():
+
+    generator = streaming_service.stream(
+        agent_executor.stream(state)
+    )
+
+    return StreamingResponse(
+        generator,
+        media_type="text/event-stream",
     )
