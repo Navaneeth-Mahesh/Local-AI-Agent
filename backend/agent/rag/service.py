@@ -5,14 +5,29 @@ from agent.rag.scanner import FileScanner
 
 class FileIndexService:
 
-    def __init__(
+    async def index(
         self,
-        scanner: FileScanner,
+        root,
     ):
-        self._scanner = scanner
 
-    def index(
-        self,
-        root: Path,
-    ):
-        return self._scanner.scan(root)
+        scanned_files = self._scanner.scan(root)
+
+        for scanned in scanned_files:
+
+            existing = await self._repository.get_by_path(
+                str(scanned.path)
+            )
+
+            status = ChangeDetector.detect(
+                existing,
+                scanned,
+            )
+
+            if status.name == "NEW":
+                ...
+
+            elif status.name == "MODIFIED":
+                ...
+
+            else:
+                continue
