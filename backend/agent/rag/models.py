@@ -5,9 +5,6 @@ from pathlib import Path
 
 @dataclass(slots=True)
 class IndexedFile:
-    """
-    Domain model representing an indexed file.
-    """
 
     path: Path
 
@@ -20,3 +17,15 @@ class IndexedFile:
     modified_at: datetime
 
     sha256: str
+
+
+@dataclass(slots=True)
+class Document:
+
+    path: Path
+
+    title: str
+
+    content: str
+
+    metadata: dict
