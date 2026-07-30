@@ -22,5 +22,12 @@ class ContextBuilder:
                 context,
                 **kwargs,
             )
+        if context.documents:
+            prompt.append(
+                f"""
+            Relevant Documents
 
+            {context.documents}
+            """
+            )
         return context

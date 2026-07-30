@@ -26,3 +26,8 @@ class FileIndexService:
             await self._pipeline.process(
                 file.path
             )
+    metadata={
+        "chunk_id": chunk.id,
+        "chunk_index": chunk.chunk_index,
+        "source": chunk.source,
+    }

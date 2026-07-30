@@ -4,6 +4,7 @@ class ContextItem:
     source: str
     content: str
     memories: str = ""
+    documents: str = ""
 
 @dataclass(slots=True)
 class LLMContext:
@@ -13,6 +14,7 @@ class LLMContext:
             self,
             source: str,
             content: str,
+            
     ) -> None:
         self.items.append(
             ContextItem(
