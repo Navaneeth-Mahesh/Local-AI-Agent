@@ -6,15 +6,14 @@ class ContextBuilder:
 
     def __init__(
         self,
-        providers: list[BaseContextProvider],
+        providers: list[BaseContextProvider] | None = None,
     ):
-        self._providers = providers
+        self._providers = providers or []
 
     async def build(
         self,
         **kwargs,
     ) -> LLMContext:
-
         context = LLMContext()
 
         for provider in self._providers:
@@ -22,12 +21,5 @@ class ContextBuilder:
                 context,
                 **kwargs,
             )
-        if context.documents:
-            prompt.append(
-                f"""
-            Relevant Documents
 
-            {context.documents}
-            """
-            )
         return context

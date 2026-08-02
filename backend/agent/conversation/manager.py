@@ -22,36 +22,23 @@ class ConversationManager(BaseConversationManager):
         conversation_repository: ConversationRepository,
         message_repository: MessageRepository,
     ) -> None:
-
-        self._conversation_repository = (
-            conversation_repository
-        )
-
-        self._message_repository = (
-            message_repository
-        )
+        self._conversation_repository = conversation_repository
+        self._message_repository = message_repository
 
     async def load(
         self,
         conversation_id: int,
     ) -> ConversationContext:
-
-        conversation = (
-            await self._conversation_repository.get_by_id(
-                conversation_id
-            )
+        conversation = await self._conversation_repository.get_by_id(
+            conversation_id
         )
-
-        return ConversationMapper.to_domain(
-            conversation
-        )
+        return ConversationMapper.to_domain(conversation)
 
     async def append_user_message(
         self,
         conversation_id: int,
         content: str,
     ) -> None:
-
         await self._message_repository.create(
             conversation_id=conversation_id,
             role="user",
@@ -63,24 +50,20 @@ class ConversationManager(BaseConversationManager):
         conversation_id: int,
         content: str,
     ) -> None:
-
         await self._message_repository.create(
             conversation_id=conversation_id,
             role="assistant",
             content=content,
         )
+
     async def create(
         self,
         *,
         user_id: int,
         title: str,
     ) -> ConversationContext:
-
-    conversation = await self._conversation_repository.create(
-        title=title,
-        user_id=user_id,
-    )
-
-    return ConversationMapper.to_domain(
-        conversation
-    )
+        conversation = await self._conversation_repository.create(
+            title=title,
+            user_id=user_id,
+        )
+        return ConversationMapper.to_domain(conversation)

@@ -1,28 +1,25 @@
 from sqlalchemy import select
-from sqlalchemy.orm import Session
-
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.ai_provider import AIProvider
 
 
 class AIProviderRepository:
 
-    def __init__(self, db: Session):
+    def __init__(self, db: AsyncSession):
         self.db = db
 
-    def get(self, user_id: int):
-        statement = (
-            select(AIProvider)
-            .where(AIProvider.user_id == user_id)
-        )
-        return self.db.scalar(statement)
+    async def get(self, user_id: int) -> AIProvider | None:
+        statement = select(AIProvider).where(AIProvider.user_id == user_id)
+        result = await self.db.execute(statement)
+        return result.scalar_one_or_none()
 
-    def save(self, provider: AIProvider):
+    async def save(self, provider: AIProvider) -> AIProvider:
         self.db.add(provider)
-        self.db.commit()
-        self.db.refresh(provider)
+        await self.db.commit()
+        await self.db.refresh(provider)
         return provider
 
-    def update(self, provider: AIProvider):
-        self.db.commit()
-        self.db.refresh(provider)
+    async def update(self, provider: AIProvider) -> AIProvider:
+        await self.db.commit()
+        await self.db.refresh(provider)
         return provider

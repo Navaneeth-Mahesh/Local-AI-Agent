@@ -1,24 +1,15 @@
+from typing import Any
 from agent.prompts.base import PromptTemplate
 
 
 class PromptBuilder:
     """
-    Builds prompts from reusable templates.
+    Builds prompts from reusable templates and context.
     """
 
     @staticmethod
     def build(
         template: PromptTemplate,
-        **kwargs,
+        **kwargs: Any,
     ) -> str:
-
         return template.content.format(**kwargs)
-    if context.memories:
-
-        prompt.append(
-            f"""
-    Relevant User Memories:
-
-    {context.memories}
-    """
-        )

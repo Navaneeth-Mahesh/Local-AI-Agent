@@ -1,6 +1,5 @@
 from agent.brain.brain import AgentBrain
 from agent.conversation.manager import ConversationManager
-
 from app.schemas.chat import (
     ChatRequest,
     ChatResponse,
@@ -24,19 +23,18 @@ class ChatService:
         request: ChatRequest,
     ) -> ChatResponse:
 
-        # Create conversation if needed
+        # Create or load conversation
         if request.conversation_id is None:
-
             conversation = await self._conversation_manager.create(
                 user_id=user_id,
                 title="New Chat",
             )
-
             conversation_id = conversation.conversation_id
-
         else:
-
             conversation_id = request.conversation_id
+            conversation = await self._conversation_manager.load(
+                conversation_id=conversation_id
+            )
 
         # Save user message
         await self._conversation_manager.append_user_message(

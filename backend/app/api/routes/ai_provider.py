@@ -1,16 +1,12 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
 
-from app.api.dependencies import get_current_user
-from app.database.session import get_db
+from app.api.dependencies import get_current_user, get_ai_provider_service
 from app.models.user import User
 from app.schemas.ai_provider import (
     AIProviderCreate,
     AIProviderResponse,
 )
-from app.services.ai_provider_service import (
-    AIProviderService,
-)
+from app.services.ai_provider_service import AIProviderService
 
 router = APIRouter(
     prefix="/ai-provider",
@@ -22,25 +18,31 @@ router = APIRouter(
     "/",
     response_model=AIProviderResponse,
 )
-def get_provider(
+async def get_provider(
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
+    service: AIProviderService = Depends(get_ai_provider_service),
 ):
-    return AIProviderService(db).get_provider(
-        current_user.id
-    )
+    provider = await service.get_provider(current_user.id)
+    if not provider:
+        return AIProviderResponse(
+            provider="gemini",
+            api_key="",
+            model="gemini-2.5-flash",
+            temperature=0.7,
+        )
+    return provider
 
 
 @router.post(
     "/",
     response_model=AIProviderResponse,
 )
-def save_provider(
+async def save_provider(
     data: AIProviderCreate,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
+    service: AIProviderService = Depends(get_ai_provider_service),
 ):
-    return AIProviderService(db).save_provider(
+    return await service.save_provider(
         current_user.id,
         data,
     )

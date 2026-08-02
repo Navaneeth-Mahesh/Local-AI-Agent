@@ -1,3 +1,4 @@
+from collections.abc import AsyncGenerator
 from agent.llm.interfaces import BaseLLMProvider
 from agent.llm.models import (
     LLMRequest,
@@ -16,42 +17,32 @@ class GeminiProvider(BaseLLMProvider):
         api_key: str,
         config: GeminiConfig | None = None,
     ):
-
         self._config = config or GeminiConfig()
-
         self._client = GeminiClient(api_key)
 
     async def generate(
         self,
         request: LLMRequest,
     ) -> LLMResponse:
+        contents = GeminiMapper.to_contents(request.messages)
 
-        contents = GeminiMapper.to_contents(
-            request.messages
-        )
-
-        response = self._client.client.models.generate_content(
-
+        # Async generation via Google GenAI SDK
+        response = await self._client.client.aio.models.generate_content(
             model=self._config.model,
-
             contents=contents,
         )
 
-        return GeminiMapper.to_response(
-            response
+        return GeminiMapper.to_response(response)
+
+    async def stream(
+        self,
+        prompt: str,
+    ) -> AsyncGenerator[str, None]:
+        response = await self._client.client.aio.models.generate_content_stream(
+            model=self._config.model,
+            contents=prompt,
         )
-        async def stream(
-            self,
-            prompt,
-        ):
 
-            response = self._client.models.generate_content_stream(
-                model=self._model,
-                contents=prompt,
-            )
-
-            for chunk in response:
-
-                if chunk.text:
-
-                    yield chunk.text
+        async for chunk in response:
+            if chunk.text:
+                yield chunk.text

@@ -1,0 +1,314 @@
+c:/Users/usr/AI-Agent
+|-- .gitignore
+|-- FOLDER_STRUCTURE.md
+|-- README.md
+|-- _generate_tree.py
+|-- _tree_output.txt
+|-- backend
+|   |-- .env
+|   |-- .env.example
+|   |-- .gitignore
+|   |-- Dockerfile
+|   |-- LICENSE
+|   |-- README.md
+|   |-- agent
+|   |   |-- adapters
+|   |   |   `-- gemini
+|   |   |       |-- client.py
+|   |   |       |-- config.py
+|   |   |       |-- embedding_mapper.py
+|   |   |       |-- embedding_provider.py
+|   |   |       |-- mapper.py
+|   |   |       `-- provider.py
+|   |   |-- brain
+|   |   |   |-- __init__.py
+|   |   |   |-- brain.py
+|   |   |   |-- dependencies.py
+|   |   |   |-- executor.py
+|   |   |   |-- loop.py
+|   |   |   |-- models.py
+|   |   |   |-- result.py
+|   |   |   `-- state.py
+|   |   |-- context
+|   |   |   |-- __init__.py
+|   |   |   |-- builder.py
+|   |   |   |-- manager.py
+|   |   |   |-- models.py
+|   |   |   |-- providers
+|   |   |   |   |-- conversation.py
+|   |   |   |   |-- document_context.py
+|   |   |   |   |-- long_term_memory.py
+|   |   |   |   `-- short_term_memory.py
+|   |   |   `-- providers.py
+|   |   |-- conversation
+|   |   |   |-- __init__.py
+|   |   |   |-- exceptions.py
+|   |   |   |-- interfaces.py
+|   |   |   |-- manager.py
+|   |   |   |-- mapper.py
+|   |   |   `-- models.py
+|   |   |-- embeddings
+|   |   |   |-- dependencies.py
+|   |   |   |-- factory.py
+|   |   |   |-- interfaces.py
+|   |   |   |-- models.py
+|   |   |   `-- service.py
+|   |   |-- llm
+|   |   |   |-- __init__.py
+|   |   |   |-- dependencies.py
+|   |   |   |-- enums.py
+|   |   |   |-- exceptions.py
+|   |   |   |-- factory.py
+|   |   |   |-- interfaces.py
+|   |   |   |-- models.py
+|   |   |   `-- service.py
+|   |   |-- memory
+|   |   |   |-- long_term
+|   |   |   |   |-- extractor.py
+|   |   |   |   |-- interfaces.py
+|   |   |   |   |-- manager.py
+|   |   |   |   |-- models.py
+|   |   |   |   |-- parser.py
+|   |   |   |   |-- prompts.py
+|   |   |   |   `-- retriever.py
+|   |   |   `-- short_term
+|   |   |       |-- manager.py
+|   |   |       |-- models.py
+|   |   |       |-- policy.py
+|   |   |       |-- summarizer.py
+|   |   |       `-- tokenizer.py
+|   |   |-- observability
+|   |   |   |-- __init__.py
+|   |   |   |-- circuit_breaker.py
+|   |   |   |-- metrics.py
+|   |   |   |-- rate_limiter.py
+|   |   |   |-- retry.py
+|   |   |   |-- telemetry.py
+|   |   |   |-- timer.py
+|   |   |   `-- tracing.py
+|   |   |-- permissions
+|   |   |   |-- enums.py
+|   |   |   |-- exceptions.py
+|   |   |   |-- interfaces.py
+|   |   |   |-- manager.py
+|   |   |   `-- models.py
+|   |   |-- planner
+|   |   |   |-- __init__.py
+|   |   |   |-- enums.py
+|   |   |   |-- interfaces.py
+|   |   |   |-- models.py
+|   |   |   |-- planner.py
+|   |   |   `-- strategies.py
+|   |   |-- plugins
+|   |   |   `-- plugin_system
+|   |   |       |-- __init__.py
+|   |   |       |-- interfaces.py
+|   |   |       |-- loader.py
+|   |   |       |-- manager.py
+|   |   |       |-- models.py
+|   |   |       `-- registry.py
+|   |   |-- prompts
+|   |   |   |-- __init__.py
+|   |   |   |-- base.py
+|   |   |   |-- builder.py
+|   |   |   |-- manager.py
+|   |   |   |-- system.py
+|   |   |   `-- templates.py
+|   |   |-- rag
+|   |   |   |-- change_detector.py
+|   |   |   |-- chunking
+|   |   |   |   |-- interfaces.py
+|   |   |   |   |-- models.py
+|   |   |   |   |-- semantic_chunker.py
+|   |   |   |   |-- sentence_splitter.py
+|   |   |   |   `-- service.py
+|   |   |   |-- embedder.py
+|   |   |   |-- filters.py
+|   |   |   |-- hasher.py
+|   |   |   |-- loaders
+|   |   |   |   |-- base.py
+|   |   |   |   |-- docx_loader.py
+|   |   |   |   |-- factory.py
+|   |   |   |   |-- json_loader.py
+|   |   |   |   |-- markdown_loader.py
+|   |   |   |   |-- pdf_loader.py
+|   |   |   |   `-- text_loader.py
+|   |   |   |-- models.py
+|   |   |   |-- pipeline.py
+|   |   |   |-- ranking.py
+|   |   |   |-- retriever.py
+|   |   |   |-- scanner.py
+|   |   |   |-- service.py
+|   |   |   `-- vector_mapper.py
+|   |   |-- state
+|   |   |   |-- __init__.py
+|   |   |   |-- enums.py
+|   |   |   |-- manager.py
+|   |   |   `-- models.py
+|   |   |-- streaming
+|   |   |   |-- __init__.py
+|   |   |   |-- models.py
+|   |   |   |-- service.py
+|   |   |   `-- sse.py
+|   |   |-- tools
+|   |   |   |-- base.py
+|   |   |   |-- calculator
+|   |   |   |   |-- _init__.py
+|   |   |   |   |-- models.py
+|   |   |   |   `-- tool.py
+|   |   |   |-- context.py
+|   |   |   |-- exceptions.py
+|   |   |   |-- manager.py
+|   |   |   |-- metadata.py
+|   |   |   |-- registry.py
+|   |   |   `-- result.py
+|   |   `-- vector_store
+|   |       |-- interfaces.py
+|   |       |-- mapper.py
+|   |       `-- repository.py
+|   |-- alembic
+|   |   |-- README
+|   |   |-- env.py
+|   |   |-- script.py.mako
+|   |   `-- versions
+|   |       `-- 8b3f6a602f5a_initial_migration.py
+|   |-- alembic.ini
+|   |-- app
+|   |   |-- api
+|   |   |   |-- dependencies.py
+|   |   |   `-- routes
+|   |   |       |-- ai_provider.py
+|   |   |       |-- auth.py
+|   |   |       |-- chat.py
+|   |   |       |-- settings.py
+|   |   |       `-- users.py
+|   |   |-- core
+|   |   |   |-- config.py
+|   |   |   |-- exceptions.py
+|   |   |   |-- logging.py
+|   |   |   |-- middleware.py
+|   |   |   |-- response.py
+|   |   |   |-- security.py
+|   |   |   `-- validators.py
+|   |   |-- database
+|   |   |   |-- __init__.py
+|   |   |   |-- base.py
+|   |   |   |-- dependencies.py
+|   |   |   `-- session.py
+|   |   |-- main.py
+|   |   |-- models
+|   |   |   |-- Database.md
+|   |   |   |-- __init__.py
+|   |   |   |-- ai_provider.py
+|   |   |   |-- conversation.py
+|   |   |   |-- conversation_summary.py
+|   |   |   |-- indexed_file.py
+|   |   |   |-- indexed_folder.py
+|   |   |   |-- long_term_memory.py
+|   |   |   |-- memory_vector.py
+|   |   |   |-- message.py
+|   |   |   |-- user.py
+|   |   |   `-- user_settings.py
+|   |   |-- repositories
+|   |   |   |-- ai_provider_repository.py
+|   |   |   |-- conversation_repository.py
+|   |   |   |-- conversation_summary_repository.py
+|   |   |   |-- file_index_repository.py
+|   |   |   |-- message_repository.py
+|   |   |   |-- settings_repository.py
+|   |   |   |-- user_repository.py
+|   |   |   `-- vector_repository.py
+|   |   |-- schemas
+|   |   |   |-- ai_provider.py
+|   |   |   |-- chat.py
+|   |   |   |-- settings.py
+|   |   |   `-- user.py
+|   |   |-- services
+|   |   |   |-- ai_provider_service.py
+|   |   |   |-- auth_service.py
+|   |   |   |-- chat_service.py
+|   |   |   |-- conversation_service.py
+|   |   |   `-- settings_service.py
+|   |   `-- utils
+|   |-- docker-compose.yml
+|   |-- requirements.txt
+|   |-- test.db
+|   `-- tests
+|       |-- conftest.py
+|       |-- test_auth.py
+|       |-- test_prompt.py
+|       |-- test_registry.py
+|       |-- test_root.py
+|       |-- test_settings.py
+|       `-- test_users.py
+|-- docker
+|-- docs
+|   |-- Phase 1
+|   |   |-- 01-Backend-Concepts.md
+|   |   |-- 02-Foundation.md
+|   |   |-- 03-Architecture-part-1.md
+|   |   |-- 04-Architecture-part-2.md
+|   |   |-- 05-configuration-management.md
+|   |   |-- 06-pydantic-settings-and-config.py.md
+|   |   |-- 07-Db-Fundamentals1.md
+|   |   |-- 08-Db-Fundamentals2.md
+|   |   |-- 09-Db-Fundamentals3.md
+|   |   |-- 10-SQL-Foundamentals.md
+|   |   |-- 11-Installing-PostGreSQL-and-Understanding-db-server.md
+|   |   |-- 12-SQLAlchemy.md
+|   |   |-- 13-SQLAlchemy-Models & Relationships.md
+|   |   |-- 14-Database Migrations-with-Alembic.md
+|   |   |-- 15-Database-Session-Lifecycle & Dependency-Injection.md
+|   |   |-- 16-Password-Security & Hashing.md
+|   |   |-- 17-JWT-Authentication.md
+|   |   |-- 18-Building-JWT-Authentication-in-FastAPI.md
+|   |   |-- 19-Repository Pattern, Service Layer & Building the User Module.md
+|   |   |-- 20-Implementing the User Module End-to-End.md
+|   |   |-- 21-Build-The-User-Schemas.md
+|   |   |-- 22-Building-The-User-Repo.md
+|   |   |-- 23-auth.md
+|   |   |-- 24-auth-api.md
+|   |   |-- 25-Authentication.md
+|   |   `-- 26-Backend-Architecture.md
+|   `-- Phase 2
+|       |-- 01-Architecture & Design.md
+|       `-- 02-LLM-Foundation.md
+`-- frontend
+    |-- .gitignore
+    |-- app
+    |   |-- App.tsx
+    |   |-- main.tsx
+    |   |-- providers
+    |   |   |-- AuthProvider.tsx
+    |   |   |-- QueryProvider.tsx
+    |   |   `-- ThemeProvider.tsx
+    |   `-- router.tsx
+    |-- assets
+    |-- components
+    |   |-- common
+    |   |-- layout
+    |   `-- ui
+    |-- config
+    |-- features
+    |   |-- auth
+    |   |-- chat
+    |   |-- conversations
+    |   |-- dashboard
+    |   |-- memory
+    |   |-- permissions
+    |   |-- rag
+    |   |-- settings
+    |   `-- tools
+    |-- hooks
+    |-- lib
+    |   |-- api
+    |   |-- constants
+    |   `-- utils
+    |-- public
+    |-- routes
+    |-- services
+    |-- src
+    |-- store
+    |-- styles
+    |-- types
+    `-- vite-env.d.ts

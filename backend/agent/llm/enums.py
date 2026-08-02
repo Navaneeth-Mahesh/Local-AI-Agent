@@ -1,9 +1,11 @@
-from enmu import Enum
+from enum import Enum
+
 
 class ProviderType(str, Enum):
     GEMINI = "gemini"
     OPENAI = "openai"
     OLLAMA = "ollama"
+
 
 class MessageRole(str, Enum):
     SYSTEM = "system"

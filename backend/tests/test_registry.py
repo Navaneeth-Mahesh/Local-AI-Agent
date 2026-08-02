@@ -1,11 +1,13 @@
-registry = ToolRegistry()
+from agent.tools.registry import ToolRegistry
+from agent.tools.calculator.tool import CalculatorTool
 
-calculator = CalculatorTool()
 
-registry.register(calculator)
+def test_tool_registry():
+    registry = ToolRegistry()
+    calculator = CalculatorTool()
 
-assert registry.exists("calculator")
+    registry.register(calculator)
 
-tool = registry.get("calculator")
-
-assert tool is calculator
+    assert registry.exists("calculator")
+    tool = registry.get("calculator")
+    assert tool is calculator

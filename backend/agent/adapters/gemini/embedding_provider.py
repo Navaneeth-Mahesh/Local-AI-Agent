@@ -21,15 +21,13 @@ class GeminiEmbeddingProvider(BaseEmbeddingService):
         self._client = Client(
             api_key=api_key,
         )
-
         self._model = model
 
     async def embed(
         self,
         text: str,
     ) -> EmbeddingResult:
-
-        response = self._client.models.embed_content(
+        response = await self._client.aio.models.embed_content(
             model=self._model,
             contents=text,
         )

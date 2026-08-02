@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, status
-from sqlalchemy.orm import Session
 
-from app.database.session import get_db
+from app.api.dependencies import get_auth_service
 from app.schemas.user import (
     UserRegister,
     UserLogin,
@@ -21,33 +20,30 @@ router = APIRouter(
     response_model=UserResponse,
     status_code=status.HTTP_201_CREATED,
 )
-def register(
+async def register(
     user: UserRegister,
-    db: Session = Depends(get_db),
+    service: AuthService = Depends(get_auth_service),
 ):
-    service = AuthService(db)
-    return service.register_user(user)
+    return await service.register_user(user)
 
 
 @router.post(
     "/login",
     response_model=Token,
 )
-def login(
+async def login(
     credentials: UserLogin,
-    db: Session = Depends(get_db),
+    service: AuthService = Depends(get_auth_service),
 ):
-    service = AuthService(db)
-    return service.login_user(credentials)
+    return await service.login_user(credentials)
 
 
 @router.post(
     "/refresh",
     response_model=Token,
 )
-def refresh_token(
+async def refresh_token(
     refresh_token: str,
-    db: Session = Depends(get_db),
+    service: AuthService = Depends(get_auth_service),
 ):
-    service = AuthService(db)
-    return service.refresh_access_token(refresh_token)
+    return await service.refresh_access_token(refresh_token)

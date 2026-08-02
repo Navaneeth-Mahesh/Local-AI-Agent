@@ -1,19 +1,20 @@
+from typing import Any
 from agent.brain.models import AgentResponse
+from agent.brain.loop import AgentLoop
 from agent.context.manager import ContextManager
 from agent.llm.service import LLMService
 from agent.planner.planner import Planner
 from agent.prompts.manager import PromptManager
 from agent.state.manager import AgentStateManager
 from agent.state.models import AgentState
-from agent.tools.context import ToolContext
 from agent.tools.manager import ToolManager
-from agent.brain.loop import AgentLoop
+
 
 class AgentBrain:
     """
     Main AI orchestrator.
 
-    Coordinates every AI subsystem.
+    Coordinates context building, planning, tool execution, and response synthesis.
     """
 
     def __init__(
@@ -25,7 +26,6 @@ class AgentBrain:
         tool_manager: ToolManager,
         llm_service: LLMService,
     ) -> None:
-
         self._context_manager = context_manager
         self._prompt_manager = prompt_manager
         self._planner = planner
@@ -35,8 +35,9 @@ class AgentBrain:
     async def run(
         self,
         user_input: str,
+        *,
+        conversation: Any = None,
     ) -> AgentResponse:
-
         state = AgentState(
             user_input=user_input,
         )
@@ -47,39 +48,6 @@ class AgentBrain:
             state=state,
         )
 
-        prompt = self._prompt_manager.build_chat_prompt(
-            conversation="",
-            user_input=user_input,
-        )
-
-        plan = await self._planner.plan(state)
-
-        tool_results = []
-
-        for step in plan.steps:
-
-            if step.step_type.value == "tool":
-
-                result = await self._tool_manager.execute(
-                    "calculator",
-                    ToolContext(state),
-                    expression="2 + 2",
-                )
-
-                tool_results.append(result)
-
-        llm_response = await self._llm_service.generate(
-            prompt=prompt,
-        )
-
-        AgentStateManager.complete(state)
-
-        return AgentResponse(
-            state=state,
-            plan=plan,
-            response=llm_response.text,
-            tool_results=tool_results,
-        )
         loop = AgentLoop(
             planner=self._planner,
             tool_manager=self._tool_manager,
@@ -87,12 +55,15 @@ class AgentBrain:
             prompt_manager=self._prompt_manager,
         )
 
-        plan, tool_results, llm_response = await loop.execute(
-        state
+        plan, tool_results, llm_response = await loop.execute(state)
+
+        AgentStateManager.complete(state)
+
+        text_response = llm_response.text if llm_response else "Processing complete."
+
+        return AgentResponse(
+            state=state,
+            plan=plan,
+            response=text_response,
+            tool_results=tool_results,
         )
-        async def run(
-    self,
-    *,
-    conversation,
-    user_input: str,
-):

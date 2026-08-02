@@ -1,28 +1,25 @@
 from sqlalchemy import select
-from sqlalchemy.orm import Session
-
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.user_settings import UserSettings
 
 
 class SettingsRepository:
 
-    def __init__(self, db: Session):
+    def __init__(self, db: AsyncSession):
         self.db = db
 
-    def get(self, user_id: int):
-        statement = (
-            select(UserSettings)
-            .where(UserSettings.user_id == user_id)
-        )
-        return self.db.scalar(statement)
+    async def get(self, user_id: int) -> UserSettings | None:
+        statement = select(UserSettings).where(UserSettings.user_id == user_id)
+        result = await self.db.execute(statement)
+        return result.scalar_one_or_none()
 
-    def create(self, settings: UserSettings):
+    async def create(self, settings: UserSettings) -> UserSettings:
         self.db.add(settings)
-        self.db.commit()
-        self.db.refresh(settings)
+        await self.db.commit()
+        await self.db.refresh(settings)
         return settings
 
-    def update(self, settings: UserSettings):
-        self.db.commit()
-        self.db.refresh(settings)
+    async def update(self, settings: UserSettings) -> UserSettings:
+        await self.db.commit()
+        await self.db.refresh(settings)
         return settings
